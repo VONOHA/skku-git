@@ -26,24 +26,24 @@ int nkmp(char *pat, char *string){
 }
 
 int main(void){
-	printf("-1");
+	//printf("-1");
 	int scale, start, end;
 	char pat[11], address[20]="testcases/";
 	char *string = 0;
 	FILE *fp = 0, *text=0;
 	text = fopen("nkmp.txt","w+");
-	printf("0");
+	//printf("0");
 	for(int i = 0; i<1000; ++i){
 	sprintf(address+10,"%d",i);
 	sprintf(address+strlen(address),".txt");
 	fp = fopen(address,"r");
-	printf("1");
+	//printf("1");
 	fscanf(fp, "%d", &scale);
 	fscanf(fp, "%s",pat);
 	string = (char*)calloc(scale,sizeof(char));
 	fscanf(fp,"%s",string);
 	start = clock();
-	fprintf(text,"%d ",nkmp(string,pat));
+	nkmp(pat,string);
 	end = clock();
 	fprintf(text,"%d\n",end-start);
 	fclose(fp);

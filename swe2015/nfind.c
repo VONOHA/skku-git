@@ -31,7 +31,7 @@ int main(void){
 		string = (char*)calloc(scale,sizeof(char));
 		fscanf(fp,"%s",string);
 		start = clock();
-		fprintf(text,"%d ",nfind(string,pat));
+		nfind(string,pat);
 		end = clock();
 		fprintf(text,"%d\n",end-start);
 		fclose(fp);
