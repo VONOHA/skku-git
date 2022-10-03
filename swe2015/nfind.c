@@ -1,4 +1,7 @@
+#include <time.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int nfind(char *string, char *pat){
 	int i=0, j=0, count=0, pat_length=-1;
@@ -15,10 +18,24 @@ int nfind(char *string, char *pat){
 }
 
 int main(void){
-	char pat[11];
-	scanf("%s",pat);
-	char string[21];
-	scanf("%s",string);
-	printf("%d",nfind(string,pat));
+	int scale, start, end;
+	char pat[11],adress[20]="testcases/";
+	char* string = 0;
+	FILE *fp = 0, *text = fopen("nfind.txt","w+");
+	for(int i = 0; i<1000; ++i){
+		sprintf(adress+10,"%d",i);
+		sprintf(adress+strlen(adress),".txt");
+		fp = fopen(adress,"r");
+		fscanf(fp,"%d", &scale);
+		fscanf(fp,"%s",pat);
+		string = (char*)calloc(scale,sizeof(char));
+		fscanf(fp,"%s",string);
+		start = clock();
+		fprintf(text,"%d ",nfind(string,pat));
+		end = clock();
+		fprintf(text,"%d\n",end-start);
+		fclose(fp);
+
+		free(string);}
 	return 0;
 }
