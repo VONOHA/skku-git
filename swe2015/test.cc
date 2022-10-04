@@ -8,9 +8,9 @@ int main(void){
 	FILE *fp = NULL;
 	for(; title<1000; ++title){
 		scale += 10000;
-		fp = fopen(("testcases/"+to_string(title)+".txt").c_str(),"w+");
+		fp = fopen(("testcases1/"+to_string(title)+".txt").c_str(),"w+");
 		fprintf(fp,"%d\n",scale);
-		pat_leng = rand()%9 + 1;
+		pat_leng = rand()%3 + 1;
 		for(int i = 0; i<pat_leng; ++i){
 			fprintf(fp,"%c", rand()%26+97);
 		}
