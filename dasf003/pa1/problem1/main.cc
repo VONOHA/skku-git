@@ -7,5 +7,10 @@ int main(){
   //write your code here!
   //you should call arrayModify function to modify array
   //you should call printArray function to print array
-  return 0;
+  
+	char arr[21];
+	int rest;
+	cin.getline(arr,21);
+	cout<<arr<<" "<<rest;
+	return 0;
 }
