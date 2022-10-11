@@ -18,30 +18,31 @@ void generate_serial(char *serial, char *seed, int key) {
   /* #################################### */
 	//printf("%d\n",key);
 	int index = -1, idiv,index_seed = -1;
-	char seed_c,key_c;
-	for(int i = 0; i<5; ++i){
-		for(int l = 0; l<4; ++l){
+	int seed_c,key_c;
+	while(index<23){
 			seed_c = seed[++index_seed];
 			//printf("%c ",seed_c);
 			if(isdigit(seed_c)){ // test if number 1234
 				//printf("%d digit %c ",l,seed_c);
 				idiv = key % 10;
-				key_c = seed_c - idiv;
-				if(key_c<0x30)	key_c += 10;
+				//idiv = 10 - idiv;
+				key_c = seed_c + idiv;
+				if(key_c > 0x39){key_c -= 10;}
 
 			}else if(isupper(seed_c)){ // test if supper ABCD
 				//printf("%d upper %c ",l,seed_c);
 				idiv = key % 26;
-				key_c = seed_c -idiv;
-				if(key_c<0x41) key_c += 26;
+				key_c = seed_c + idiv;
+				if(key_c > 0x5A) {key_c -= 26;}
 			}else{ //test if lower abcd
 				//printf("%d lower %c ",l,seed_c);
 				idiv = key % 26;
-				key_c = seed_c-idiv;
-				if(key_c<0x61)	key_c += 26;
-			} serial[++index] = key_c;
-			//printf("%c\n",key_c);
-		} if(i<4) serial[++index]='-'; 
+				key_c = seed_c+idiv;
+				if(key_c > 0x7A){key_c -= 26;}
+			}
+			serial[++index] = key_c;
+			//printf("%d %c %c\n",index,seed_c,key_c);
+			if(index==3||index==8||index==13||index==18) serial[++index]='-'; 
 	} ;
 	//printf("strlen  %ld\n",strlen(serial));
 }
