@@ -11,26 +11,25 @@ int main()
   //You should read file words.txt
   //call getMostParisWord function to find the most pairs of consecutive double letters
 	//std::string k;
-  	std::string result="", now;
-	int i,k=1;
+  	using namespace std;
+  	string result[2500]={""}, input[300];
+	int k = -1, start = 0, end = 0, n, index = 0;
 	std::ifstream text("words.txt");
-	while(k){
-		//std::cout<<++k<<std::endl;
-		for(i = 0; i<300; ++i){
-			std::cout<<k++<<std::endl;
-			if(!std::getline(text,a[i])) {
-				--i;
-				k = 0;
-				goto exit;
-			}
-			//std::cout<<a[i]<<std::endl;
-		}
-		exit:
-		for(int l = i+1; l<2500;++l) a[l]="";
-		now = cpe::getMostPairsWord(a);
-		if(now.length()>result.length())result = now;
-		std::cout<<result<<std::endl;
+	while(getline(text,a[++k]));
+	while(end <= k){
+		start = end + 1;
+		end = start + 298;
+		for(int l = 1; l<300; ++l) {
+			n = start + l - 1;
+			if(n<=k)input[l] = a[n];
+			else input[l] = "";
+		};
+		input[0] = result[0];
+		if(result[0] != cpe::getMostPairsWord(input)) index = -1;
+		for(int i = 1; i<300; ++i) if(input[i]!="") result[++index] = input[i];
 	}
-	std::cout<<result;
+
+	for(int i = 0; i<= index; ++i) cout<<result[i]<<endl;
+
 	return 0;
 }
