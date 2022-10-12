@@ -16,6 +16,27 @@ void generate_serial(char *serial, char *seed, int key) {
   /* #################################### */
   /* ######### <Your Code Here> ######### */
   /* #################################### */
+
+	int digit = key % 10, al = key % 10, num;
+	char now;
+	for(int i = 0; i<20; ++i){
+		now = seed[i];
+		if(isdigit(now)){
+			num = now - digit;
+			if(num < 0x30) num += 0xa;
+		}else if(isupper(now)){
+			num = now - al;
+			if(num < 0x41) num += 0x1a;
+		}else {
+			num = now - al;
+			if(num < 0x61) num += 0x1a;
+		} seed[i] = num;
+	}
+	serial[4] = '-', serial[9] = '-', serial[14] = '-', serial[19] = '-';
+	for(int i = 0; i<20; ++i){
+		serial[i+i/4] = seed[i];
+	}
+	serial[24] = '\0';
 }
 
 int main(int argc, char **argv) {

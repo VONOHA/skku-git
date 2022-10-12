@@ -1,5 +1,5 @@
 #include "arrayModify.h"
-
+#include <iostream>
 //implement these functions
 void printArray(int *arr, int num){
 	//write your code here!
