@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <sstream>
 #include "wordProcess.h"
 
 int main()
@@ -13,9 +14,13 @@ int main()
 	//std::string k;
   	using namespace std;
   	string result[2500]={""}, input[300];
-	int k = -1, start = 0, end = 0, n, index = 0;
+	int k = -1, start = 0, end = -1, n, index = 0;
 	std::ifstream text("words.txt");
-	while(getline(text,a[++k]));
+	string line;
+	while(getline(text,line)) {
+		std::stringstream ss(line);
+		while(getline(ss,a[++k],' '));
+	}
 	while(end <= k){
 		start = end + 1;
 		end = start + 298;
@@ -27,9 +32,11 @@ int main()
 		input[0] = result[0];
 		if(result[0] != cpe::getMostPairsWord(input)) index = -1;
 		for(int i = 1; i<300; ++i) if(input[i]!="") result[++index] = input[i];
+		//for(int i = 0; i<= index; ++i) cout<<result[i]<<" ";
+		//cout<<endl;
 	}
 
-	for(int i = 0; i<= index; ++i) cout<<result[i]<<endl;
+	for(int i = 0; i<= index; ++i) cout<<result[i]<<" ";
 
 	return 0;
 }

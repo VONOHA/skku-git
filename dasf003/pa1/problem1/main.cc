@@ -15,9 +15,11 @@ int main(){
 	
 	std::getline(std::cin,s);
 	
-	if(s.length()!=19){
+	if(s.length()!=19&&s.length()!=20){
 		std::cout<<"Number must be between 0~9";
 		return 0;
+	}else if(s.length()==20){
+		if(s[19]!=' ') std::cout<<"Number must be between 0~9";
 	}
 	int l = s.length();
 	for(int i = 0; i<l; ++i){

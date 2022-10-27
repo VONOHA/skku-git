@@ -17,10 +17,13 @@ void generate_serial(char *serial, char *seed, int key) {
   /* ######### <Your Code Here> ######### */
   /* #################################### */
 
-	int digit = key % 10, al = key % 26, num;
+	int digit,al, num,n;
 	char now;
 	for(int i = 0; i<20; ++i){
 		now = seed[i];
+		n = i<10 ? key/16 : key&15;
+		digit = n % 10;
+		al = n %26;
 		if(isdigit(now)){
 			num = now - digit;
 			if(num < 0x30) num += 0xa;
@@ -28,7 +31,7 @@ void generate_serial(char *serial, char *seed, int key) {
 			num = now - al;
 			if(num < 0x41) num += 0x1a;
 		}else {
-			num = now - al;
+			num = now -al;
 			if(num < 0x61) num += 0x1a;
 		} seed[i] = num;
 	}

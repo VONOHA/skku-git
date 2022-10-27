@@ -7,18 +7,17 @@ std::string cpe::getMostPairsWord(std::string words[300])
 	using namespace std;
 	string result="";
 	string now;
-	int max_num = -1, n, length;
-	char f = 0, b = 0;
+	int index, max_num = -1, n, length;
+	//char f = 0, b = 0;
 	for(int i = 0; i<300; ++i){
-		n = 0, f = 0, b = 0;
 		now = words[i];
+		n = 0;
+		//now = words[i];
 		length = now.length();
-		for(int l = 0; l < length; ++l){
-			f = now[l];
-			if(f == b){ n += 1, b = 0;
-				//cout<<b<<f<<" ";
-			}
-			else b = f;
+		index = 0;
+		while(index<length-1){
+			if(now[index]==now[index+1]) n+=1, index += 2;
+			else index += 1;
 		}
 		//if(n) cout<< now<< " "<<n<<endl;
 		if(n < max_num) words[i] = "";
