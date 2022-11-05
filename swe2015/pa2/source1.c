@@ -3,15 +3,19 @@
 #include <stdlib.h>
 #include <math.h>
 
-char inorder[256] = "", postorder[256] = "",**result=0;
-int sequence[6] = {1,2,5,11,23,47}, length = 0,row,column, arr[6]={0}, id = 0;
+char inorder[512] = "", postorder[512] = "",result[512][512]={};
+int sequence[8] = {1,2,5,11,23,47,95,191}, length = 0,row,column, arr[7]={0}, id = 0;
 
 void fill_template(int r, int c, int index){
 	
 	if(arr[id]<r) arr[++id] = r;
 
-	if(index >= 0) result[r][c] = 0;
+	if(index >= 0) {
+		//printf("%d %d\n",r,c);
+		result[r][c] = 0;
+	}
 	else if(index < 0){ 
+		//printf("%d %d\n",r,c);
 		result[r][c] = 0;
 		return;}
 	else return;
@@ -20,7 +24,7 @@ void fill_template(int r, int c, int index){
 	
 	for(int i=r+1, l = c-1; l>c-num-1; --l,++i) result[i][l] = '/';
 	for(int i=r+1, l = c+1; l<c+num+1; ++l,++i) result[i][l] = '\\';
-
+		
 	fill_template( r+num+1, c-num-1, index-1);
 	
 	fill_template( r+num+1, c+num+1, index-1);
@@ -29,6 +33,7 @@ void fill_template(int r, int c, int index){
 
 int main(void){
 	
+	char letter;
 	//receiving the input\
 	use getchar 'cause don't know the exact length
 	while((letter = getchar()) !='\n'){
@@ -52,8 +57,8 @@ int main(void){
 	corresepoding elements\
 	'rend' store right-most index of group which includes \
 	corresponding elements
-	char lend[256] ={} ;
-	char rend[256] = {} ;
+	char lend[512] ={} ;
+	char rend[512] = {} ;
 
 	//default setting of grouping array\
 	0 on the left right-most index on the right
@@ -92,25 +97,35 @@ int main(void){
 
 	//***************************************************************************\
 	***********************step for drawing tree*********************************
-
+	
+	//for(int i = 0; i<length; ++i) printf("%d ",depth_arr[i]); printf("\n");
 
 	row = sequence[depth] + 1, column = sequence[depth+1]; // size of result array
 	
+	/*
 	result = (char**)calloc(row,sizeof(char*));
 	for(int i = 0; i<row; ++i) result[i] = (char*)calloc(column,sizeof(char)); // result array
+	*/
 	
 	for(int i = 0; i<row; ++i) for( int l = 0; l<column; ++l) result[i][l] = ' ';
+	
+	//printf("%d %d\n",row,column);
 
 	fill_template(0,(column-1)/2,depth-1);
+	
+	//for(int i = 0; i<row; ++i)printf("%s\n",result[i]);
 
 	int n = 0,previous_r,previous_c;
 	char d,r,c,dr,dc;
+	
+	//printf("%s\n",inorder);
 
 	for(int i = 0; i<length; ++i){
 		d = depth_arr[i];
 		r = arr[d];
 		for(; n < column; ++n){
 			if(!result[r][n]){
+				//printf("%c ",inorder[i]);
 				result[r][n] = inorder[i];
 				break;
 			}
@@ -131,12 +146,9 @@ int main(void){
 
 	}
 		
-	for(int i = 0; i<row; ++i){
-		for(int l = 0 ; l<column; ++l) printf("%c",result[i][l]);
-		printf("\n");
-	}
-
+	for(int i = 0; i<row; ++i)printf("%s\n",result[i]);
+/*
 	for(int i = 0; i<row; ++i) free(result[i]);
-	free(result);
+	free(result);*/
 	return 0;
 }
