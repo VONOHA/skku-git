@@ -1,8 +1,9 @@
-all : array
+all : priority_queue
 
-OBJS = array.o max_heap.o binary_serach_tree.o main.o mk_tc.o
+OBJS0 = array.o linked_list.o  main.o mk_tc.o
+OBJS1 = max_heap.o binary_serach_tree.o
 
-array: $(OBJS)
+priority_queue: $(OBJS0) #$(OBJ1)
 	gcc -w -Wall -o $@ $^
 
 clean:

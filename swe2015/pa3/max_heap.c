@@ -1,13 +1,6 @@
-#include "array.h"
+#include "priority_queue.h"
 
-typedef struct{
-	
-	int priority;
-	char data[101];
-
-}element;
-
-void array(int n){
+void max_heap(int n){
 	
 	element *arr = (element*)calloc(n,sizeof(element));
 	

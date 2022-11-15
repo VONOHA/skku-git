@@ -1,17 +1,10 @@
 #include "priority_queue.h"
 
-typedef struct{
-	
-	int priority;
-	char data[101];
-
-}element;
-
 void array(int n){
 	
 	element *arr = (element*)calloc(n,sizeof(element));
 	
-	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("result.txt","w");
+	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("array.txt","w");
 	
 	int min_i = -1, min_p = -1, length;
 	
@@ -37,5 +30,5 @@ void array(int n){
 		for(int j = 0; j<length; ++j) arr[min_i].data[j] = '\0';
 	
 	}
-
+	fclose(fpp);
 }
