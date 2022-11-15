@@ -1,4 +1,4 @@
-#include "array.h"
+#include "priority_queue.h"
 
 typedef struct{
 	

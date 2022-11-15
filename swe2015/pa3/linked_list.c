@@ -8,33 +8,58 @@ typedef struct element{
 
 }element;
 
-void linked_array(int n){
+void linked_list(int n){
 	
-	element genesis = {.priority = -1, .next = 0};
+	// p for input priority
+	int p;
 
+	// d for input data
+	char d[101];
+
+	//genesis is default node of list, which will always on the rear
+	//'node' is a place where the input value will be stored
+	element rear = {.priority = -1, .next = 0}, *node = 0, *previous_node = 0, *now = 0, *front = &rear;
+	
+	//fp is file of testcases
+	//ffp is file for result
 	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("result.txt","w");
-	
-	
 
 	for(int i = 0; i<n; ++i){
-		fscanf(fp,"%d %s",&(arr[i].priority), arr[i].data);
+		
+		//pointer for current input
+		now = (element*)malloc(sizeof(element)), now->next = 0;
+		
+		//current input that mentioned
+		fscanf(fp, "%d %s", &(now->priority), now->data);
+		
+		//starting position
+		node = front;
+		
+		while(1){
+		
+			if(node->priority >= now->priority ) previous_node = node, node = node->next;
+			else if(node == front){
+				now->next = front;
+				front = now;
+			}
+			else {
+				
+				now->next = node;
+				previous_node->next = now;
+				break;
+			
+			}
+		
+		}
+		
+		free(now);
+	
 	}
 	
 	fclose(fp);
-		
-	for(int i = 0; i<n; ++i){
-		
-		min_i = -1, min_p = -1;
-		
-		for(int l = 0;l <n; ++l){
-			if(min_p <  arr[l].priority) min_p = arr[l].priority, min_i = l;
-		}
-		
-		fprintf(fpp, "%d %s\n", arr[min_i].priority, arr[min_i].data);
-		
-		arr[min_i].priority = -1;
-		length = strlen(arr[min_i].data);
 
-		for(int j = 0; j<length; ++j) arr[min_i].data[j] = '\0';
-	
+	while(front->next) {
+		fprintf(fpp,"%d %s\n",front->priority, front->data);
+		front = front->next;
 	}
+}
