@@ -1,19 +1,27 @@
 #ifndef FRACTION_H
 #define FRACTION_H
 
+#include <iostream>
+#include <string>
+using namespace std;
+
 class Fraction{
   //Write class definition here
   
 	public:
 		Fraction():N(0),D(0),NU(0){};
 
-		Fraction(int n, int d, int nu): N(n), D(d), NU(nu){};
+		Fraction(int n, int nu, int d): N(n), NU(nu), D(d){};
 
 		inline int getN(){return N;};
 		inline int getD(){return D;};
 		inline int getNU(){return NU;};
 
-  	//Add two fractions and return result
+		inline void setN(int n){ N = n;};
+		inline void setD(int d){D = d;};
+		inline void setNU(int nu){NU = nu;};
+  	
+	//Add two fractions and return result
 		Fraction sum (Fraction b);
 
 	//Add double and fraction value and return result
@@ -31,7 +39,7 @@ class Fraction{
 	//Convert fraction into mixed number.
 	//- Updates N, D, and NU.
 	//- If it is changed, return true, else return false.
-		Bool toMixedNum ();
+		bool toMixedNum ();
 
 	//Print fraction value
 	//* Format : N and NU/D
@@ -47,6 +55,9 @@ class Fraction{
 	
 	//Convert double value into a Fraction class
 		Fraction double2Fraction (double val);
+	
+	//Convert Mixed Fraction to Improper Fraction
+		Fraction Mixed2Improper ();
 
 	private:
 		int N;

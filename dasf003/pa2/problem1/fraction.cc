@@ -1,8 +1,4 @@
 #include "fraction.h"
-#include <iostream>
-#include <string>
-
-using namespace std;
 
 //Implement Member Functions
 
@@ -11,7 +7,7 @@ using namespace std;
 //getD() => return D;
 //getNU() => return NU;
 
-Bool Fraction::toMixedNum (){
+bool Fraction::toMixedNum (){
 	if(D<NU) return false;
 	else{
 		int tmp;
@@ -24,16 +20,17 @@ Bool Fraction::toMixedNum (){
 }
 
 Fraction Fraction::multiply (double b){
-	
-	Fractioin a = double2Fracction(b);
-	
-	int n,d,nu;
-	
-	n = N*a.N;
+	Fraction right = double2Fraction(b);
+	Fraction r_improper = right.Mixed2Improper();
+	Fraction result = Mixed2Improper();
+	result.setN(0);
+	result.setD(r_improper.getD() * result.getD());
+	result.setNU(r_improper.getNU() * result.getNU());
+	return result;
 }
 
 
-void Fractioin::abbreviation (){
+void Fraction::abbreviation (){
 	
 	int b, s, tmp;
 
@@ -60,13 +57,12 @@ Fraction Fraction::sum(Fraction b){
 	int result_D = 0;
 	int result_NU = 0;
 
-	int b, s, tmp;
 
 	result_N += b_N;
 	result_N += N;
 
 	result_NU = b_NU * NU;
-	result_D = b_NU * D + Nu * b_D;
+	result_D = b_NU * D + NU * b_D;
 
 	Fraction result = Fraction(result_N, result_D, result_NU);
 
@@ -81,16 +77,17 @@ Fraction Fraction::sum(Fraction b){
 Fraction Fraction::str2Fraction(string str){
 
 	string val_N, dummy;
-	int N, D, NU;
-	int b, s, tmp;
+	int n, d, nu, b, s, tmp, index;
 
-	getline(str, val_N, '.');
-	getline(str, dummy);
+	for(index = 0; str[index]!= '.'; ++index);
+	
+	val_N = str.substr(0,index);
+	dummy = str.substr(index+1, str.length()-1-index);
 
-	N = stoi(val_N);
-	D = stoi(dummy);
+	n = stoi(val_N);
+	d = stoi(dummy);
 
-	for(int i = 0, NU = 1; i < dummy.length; ++i, _NU *= 10); 
+	for(index = dummy.length(), nu = 1; index > 0; --index, nu *= 10); 
 
 	Fraction result = Fraction(N, D, NU);
 	
@@ -113,4 +110,10 @@ Fraction Fraction::double2Fraction(double val){
 
 	string val_str = to_string(val);
 	return str2Fraction(val_str);
+}
+
+Fraction Fraction::Mixed2Improper (){
+	int n, nu, d;
+	n = 0, nu = D*N+NU, d = D;
+	return Fraction(n, nu, d);
 }

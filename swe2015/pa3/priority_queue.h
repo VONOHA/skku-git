@@ -14,5 +14,5 @@ typedef struct element{
 void mk_tc(int n);
 void array(int n);
 void linked_list(int n);
-//void max_heap(int n);
+void max_heap(int n);
 //void binary_search_tree(int n);
