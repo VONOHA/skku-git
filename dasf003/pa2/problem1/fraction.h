@@ -11,14 +11,21 @@ class Fraction{
   //Write class definition here
 	public:
 		//constructor
-		Fraction():N(0),NU(0),D(1){};
-		Fraction(int n, int nu, int d): N(n), NU(nu), D(d){};
+		Fraction():N(0),NU(0),D(0){};
+		Fraction(int n, int nu, int d): N(n), NU(nu), D(d){
+			if(nu&&!d){
+				cout<<"Incorrect input";
+				exit(0);
+			}
+			if(!NU) D = 0; 
+		};
 		Fraction(double input){
 			Fraction dummy0;
 			Fraction dummy1 = dummy0.double2Fraction(input);
 			N = dummy1.getN();
 			NU = dummy1.getNU();
 			D = dummy1.getD();
+			if(!NU) D= 0;
 		};
 		Fraction(string str){
 			Fraction dummy0;
@@ -26,6 +33,7 @@ class Fraction{
 			N = dummy1.getN();
 			NU = dummy1.getNU();
 			D = dummy1.getD();
+			if(!NU) D = 0;
 		};
 
 		//get & set variable

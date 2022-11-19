@@ -28,8 +28,10 @@ int Fraction::getD(void){
 //member function
 Fraction Fraction::sum(Fraction b){
 	toImproperNum();
+	if(!NU) D =1;
 	b.toImproperNum();
 	int r_NU = b.getNU(), r_D = b.getD();
+	if(!r_NU) r_D = 1;
 	Fraction result(0,NU*r_D+D*r_NU,D*r_D);
 	result.abbreviation();
 	result.toMixedNum();
@@ -40,9 +42,11 @@ Fraction Fraction::sum(Fraction b){
 
 Fraction Fraction::sum(double b){
 	toImproperNum();
+	if(!NU) D = 1;
 	Fraction right(b);
 	right.toImproperNum();
 	int r_NU = right.getNU(), r_D = right.getD();
+	if(!r_NU) r_D = 1;
 	Fraction result(0,NU*r_D+D*r_NU,D*r_D);
 	result.abbreviation();
 	result.toMixedNum();
@@ -53,8 +57,10 @@ Fraction Fraction::sum(double b){
 
 Fraction Fraction::multiply(Fraction b){
 	toImproperNum();
+	if(!NU) D = 1;
 	b.toImproperNum();
 	int r_NU = b.getNU(), r_D = b.getD();
+	if(!r_NU) r_D =1;
 	Fraction result(0,NU*r_NU,D*r_D);
 	result.abbreviation();
 	result.toMixedNum();
@@ -65,9 +71,11 @@ Fraction Fraction::multiply(Fraction b){
 
 Fraction Fraction::multiply(double b){
 	toImproperNum();
+	if(!NU) D = 1;
 	Fraction right(b);
 	right.toImproperNum();
 	int r_NU = right.getNU(), r_D = right.getD();
+	if(!r_NU) r_D = 1;
 	Fraction result(0,NU*r_NU,D*r_D);
 	result.abbreviation();
 	result.toMixedNum();
@@ -77,39 +85,48 @@ Fraction Fraction::multiply(double b){
 }
 
 void Fraction::abbreviation(void){
+	if(!NU) D = 1;
 	int b = NU, s = D, tmp;
 	if(b<s) tmp = b, b = s, s = tmp;
 	while(s) tmp = b % s, b = s, s = tmp;
 	NU /= b;
 	D /= b;
+	if(!NU) D = 0;
 }
 
 bool Fraction::toImproperNum(void){
 	if(!N) return false;
 	else{
+		if(!NU) D = 1;
 		NU += N*D;
 		N = 0;
+		if(!NU) D = 0;
 		return true;
 	}
 }
 
 bool Fraction::toMixedNum(void){
-	if(NU<D) return false;
+	if(!NU) D = 1;
+	if(NU<D){ 
+		if(!NU) D = 0;
+		return false;
+	}
 	else{
 		N += NU/D;
 		NU %= D;
+		if(!NU) D = 0;
 		return true;
 	}
 }
 
 void Fraction::print(void){
 	cout<<N<<" and ";
-	if(!NU) cout<<0<<"/"<<0<<endl;
-	else cout<<NU<<"/"<<D<<endl;
+	cout<<NU<<"/"<<D<<endl;
 }
 
 double Fraction::toDouble(void){
 	double n = (double)N, d = (double) D, nu = (double)NU;
+	if(!nu) d =1;
 	double result = n + nu/d;
 	result *= 1000000;
 	result = round(result);
@@ -129,6 +146,7 @@ Fraction Fraction::str2Fraction(string str){
 
 	int n = stoi(str_N), nu = stoi(str_NU), d = stoi(str_D);
 	
+	if(!nu) d = 1;
 	Fraction result(n,nu,d);
 	result.abbreviation();
 
@@ -143,6 +161,7 @@ Fraction Fraction::double2Fraction(double val){
 	string str_NU = str.substr(index+1,length-index-1);
 	int n = stoi(str_N), nu = stoi(str_NU), d =(double) pow(10,str_NU.length());
 	//cout<<n<<" "<<nu<<" "<<d;
+	if(!nu) d = 1;
 	Fraction result(n,nu,d);
 	result.abbreviation();
 	return result;

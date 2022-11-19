@@ -34,7 +34,7 @@ int main(){
 	Fraction multi0 = frac1.multiply(frac0);
 	multi0.print();
 
-	Fraction multi1 = frac0.multiply(d1);
+	Fraction multi1 = frac1.multiply(d1);
 	multi1.print();
 
 	//to double
