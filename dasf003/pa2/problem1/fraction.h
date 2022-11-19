@@ -3,66 +3,54 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
+
 using namespace std;
 
 class Fraction{
   //Write class definition here
-  
 	public:
-		Fraction():N(0),D(0),NU(0){};
-
+		//constructor
+		Fraction():N(0),NU(0),D(1){};
 		Fraction(int n, int nu, int d): N(n), NU(nu), D(d){};
+		Fraction(double input){
+			Fraction dummy0;
+			Fraction dummy1 = dummy0.double2Fraction(input);
+			N = dummy1.getN();
+			NU = dummy1.getNU();
+			D = dummy1.getD();
+		};
+		Fraction(string str){
+			Fraction dummy0;
+			Fraction dummy1 = dummy0.str2Fraction(str);
+			N = dummy1.getN();
+			NU = dummy1.getNU();
+			D = dummy1.getD();
+		};
 
-		inline int getN(){return N;};
-		inline int getD(){return D;};
-		inline int getNU(){return NU;};
+		//get & set variable
+		void setN(int n);
+		void setNU(int nu);
+		void setD(int d);
+		int getN(void);
+		int getNU(void);
+		int getD(void);
 
-		inline void setN(int n){ N = n;};
-		inline void setD(int d){D = d;};
-		inline void setNU(int nu){NU = nu;};
-  	
-	//Add two fractions and return result
-		Fraction sum (Fraction b);
-
-	//Add double and fraction value and return result
-		Fraction sum (double b);
-
-	//Multiply two fractions and return result
-		Fraction multiply (Fraction b);
-
-	//Multiply double and fraction value and return result
-		Fraction multiply (double b);
-
-	//Abbreviate fraction.
-		void abbreviation ();
-
-	//Convert fraction into mixed number.
-	//- Updates N, D, and NU.
-	//- If it is changed, return true, else return false.
-		bool toMixedNum ();
-
-	//Print fraction value
-	//* Format : N and NU/D
-		void print ();
-
-	//Convert fraction into double.
-	//* Round to fourth decimal place
-		double toDouble ();
-
-	//Convert string into a Fraction class
-	//* String format : N/NU/D
-		Fraction str2Fraction (string str);
+		//member function
+		Fraction sum(Fraction b);
+		Fraction sum(double b);
+		Fraction multiply(Fraction b);
+		Fraction multiply(double b);
+		void abbreviation(void);
+		bool toMixedNum(void);
+		bool toImproperNum(void);
+		void print(void);
+		double toDouble(void);
+		Fraction str2Fraction(string str);
+		Fraction double2Fraction(double val);
 	
-	//Convert double value into a Fraction class
-		Fraction double2Fraction (double val);
-	
-	//Convert Mixed Fraction to Improper Fraction
-		Fraction Mixed2Improper ();
-
 	private:
-		int N;
-		int D;
-		int NU;
+		int N,NU,D;
 };
 
 #endif

@@ -1,119 +1,149 @@
 #include "fraction.h"
+#include <iostream>
+#include <string>
+#include <cmath>
 
-//Implement Member Functions
+using namespace std;
 
-//elementary functions
-//getN() => return N;
-//getD() => return D;
-//getNU() => return NU;
+//get & set variable
+void Fraction::setN(int n){
+	N = n;
+}
+void Fraction::setNU(int nu){
+	NU = nu;
+}
+void Fraction::setD(int d){
+	D = d;
+}
+int Fraction::getN(void){
+	return N;
+}
+int Fraction::getNU(void){
+	return NU;
+}
+int Fraction::getD(void){
+	return D;
+}
 
-bool Fraction::toMixedNum (){
-	if(D<NU) return false;
+//member function
+Fraction Fraction::sum(Fraction b){
+	toImproperNum();
+	b.toImproperNum();
+	int r_NU = b.getNU(), r_D = b.getD();
+	Fraction result(0,NU*r_D+D*r_NU,D*r_D);
+	result.abbreviation();
+	result.toMixedNum();
+	abbreviation();
+	toMixedNum();
+	return result;
+}
+
+Fraction Fraction::sum(double b){
+	toImproperNum();
+	Fraction right(b);
+	right.toImproperNum();
+	int r_NU = right.getNU(), r_D = right.getD();
+	Fraction result(0,NU*r_D+D*r_NU,D*r_D);
+	result.abbreviation();
+	result.toMixedNum();
+	abbreviation();
+	toMixedNum();
+	return result;
+}
+
+Fraction Fraction::multiply(Fraction b){
+	toImproperNum();
+	b.toImproperNum();
+	int r_NU = b.getNU(), r_D = b.getD();
+	Fraction result(0,NU*r_NU,D*r_D);
+	result.abbreviation();
+	result.toMixedNum();
+	abbreviation();
+	toMixedNum();
+	return result;
+}
+
+Fraction Fraction::multiply(double b){
+	toImproperNum();
+	Fraction right(b);
+	right.toImproperNum();
+	int r_NU = right.getNU(), r_D = right.getD();
+	Fraction result(0,NU*r_NU,D*r_D);
+	result.abbreviation();
+	result.toMixedNum();
+	abbreviation();
+	toMixedNum();
+	return result;
+}
+
+void Fraction::abbreviation(void){
+	int b = NU, s = D, tmp;
+	if(b<s) tmp = b, b = s, s = tmp;
+	while(s) tmp = b % s, b = s, s = tmp;
+	NU /= b;
+	D /= b;
+}
+
+bool Fraction::toImproperNum(void){
+	if(!N) return false;
 	else{
-		int tmp;
-		tmp = D/NU;
-		N += tmp;
-		D -= D%NU;
-		if(!D) NU = 0;
+		NU += N*D;
+		N = 0;
 		return true;
 	}
 }
 
-Fraction Fraction::multiply (double b){
-	Fraction right = double2Fraction(b);
-	Fraction r_improper = right.Mixed2Improper();
-	Fraction result = Mixed2Improper();
-	result.setN(0);
-	result.setD(r_improper.getD() * result.getD());
-	result.setNU(r_improper.getNU() * result.getNU());
-	return result;
-}
-
-
-void Fraction::abbreviation (){
-	
-	int b, s, tmp;
-
-	if(D>NU) b = D, s = NU;
-	else b = NU, s = D;
-
-	while(s!=0){
-		tmp = s;
-		s = b % s;
-		b = tmp;
+bool Fraction::toMixedNum(void){
+	if(NU<D) return false;
+	else{
+		N += NU/D;
+		NU %= D;
+		return true;
 	}
-	
-	D /= b, NU /= b;
-
 }
 
-Fraction Fraction::sum(Fraction b){
-	
-	int b_N = b.getN();
-	int b_D = b.getD();
-	int b_NU = b.getNU();
+void Fraction::print(void){
+	cout<<N<<" and ";
+	if(!NU) cout<<0<<"/"<<0<<endl;
+	else cout<<NU<<"/"<<D<<endl;
+}
 
-	int result_N = 0;
-	int result_D = 0;
-	int result_NU = 0;
-
-
-	result_N += b_N;
-	result_N += N;
-
-	result_NU = b_NU * NU;
-	result_D = b_NU * D + NU * b_D;
-
-	Fraction result = Fraction(result_N, result_D, result_NU);
-
-	result.abbreviation();
-
-	result.toMixedNum();
-
+double Fraction::toDouble(void){
+	double n = (double)N, d = (double) D, nu = (double)NU;
+	double result = n + nu/d;
+	result *= 1000000;
+	result = round(result);
+	result /= 1000000;
 	return result;
-
 }
 
 Fraction Fraction::str2Fraction(string str){
+	int index0 = -1, index1 = -1, length = str.length();
+	for(char c: str) if(++index0, c == '/') break;
+	string str_N = str.substr(0,index0);
+	str.erase(0,index0+1);
+	for(char c:str) if(++index1, c =='/') break;
+	string str_NU = str.substr(0,index1);
+	str.erase(0,index1+1);
+	string str_D = str;
 
-	string val_N, dummy;
-	int n, d, nu, b, s, tmp, index;
-
-	for(index = 0; str[index]!= '.'; ++index);
+	int n = stoi(str_N), nu = stoi(str_NU), d = stoi(str_D);
 	
-	val_N = str.substr(0,index);
-	dummy = str.substr(index+1, str.length()-1-index);
-
-	n = stoi(val_N);
-	d = stoi(dummy);
-
-	for(index = dummy.length(), nu = 1; index > 0; --index, nu *= 10); 
-
-	Fraction result = Fraction(N, D, NU);
-	
+	Fraction result(n,nu,d);
 	result.abbreviation();
 
 	return result;
 }
 
-void Fraction::print(){
-	cout<<N<<" and "<<D<<"/"<<NU<<endl;
-}
-
-
-Fraction Fraction::sum (double b){
-	return sum(double2Fraction(b));
-}
-
-
 Fraction Fraction::double2Fraction(double val){
-
-	string val_str = to_string(val);
-	return str2Fraction(val_str);
-}
-
-Fraction Fraction::Mixed2Improper (){
-	int n, nu, d;
-	n = 0, nu = D*N+NU, d = D;
-	return Fraction(n, nu, d);
+	string str = to_string(val);
+	int index = -1, length = str.length();
+	for(char c: str) if(++index, c == '.') break;
+	string str_N = str.substr(0,index);
+	string str_NU = str.substr(index+1,length-index-1);
+	int n = stoi(str_N), nu = stoi(str_NU), d =(double) pow(10,str_NU.length());
+	//cout<<n<<" "<<nu<<" "<<d;
+	Fraction result(n,nu,d);
+	result.abbreviation();
+	return result;
 }
