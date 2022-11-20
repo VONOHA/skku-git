@@ -2,6 +2,7 @@
 
 void mk_tc(int n){
 	
+	n +=30;
 	int priority, *arr = 0, tmp, m;
 	// n for number of inputs
 	// priority is priority
@@ -11,7 +12,7 @@ void mk_tc(int n){
 	FILE* fp = fopen("testcases.txt","w");
 
 	arr = (int*)calloc(n,sizeof(int));
-
+	
 	for(int i = 0; i<n; ++i) arr[i] = i;
 
 	srand(time(NULL));
@@ -23,10 +24,11 @@ void mk_tc(int n){
 		arr[n-1-m] = tmp;
 	}
 	
+	n-=30;
+
 	for(int i =0; i < n; ++i){
 		priority = arr[i];
 		fprintf(fp,"%d ",priority);
-		fprintf(stdout,"%d ",priority);
 		for(int l = 0; l< 100; ++l) fprintf(fp,"%c",rand()%26 + 65);
 		fprintf(fp,"\n");
 	}

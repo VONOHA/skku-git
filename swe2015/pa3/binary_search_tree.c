@@ -3,9 +3,15 @@
 
 void binary_search_tree(int n){
 	
-	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("binary_serach_tree.txt","w");
+	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("binary_search_tree.txt","w");
 	
-	element genesis = {.priority = 0, .prev = 0, .next = 0}, *position = 0;
+	element genesis;
+
+	element *position = 0, *parent = 0;
+
+	genesis.priority = 0;
+	genesis.next = (element*)calloc(1,sizeof(element));
+	genesis.prev = (element*)calloc(1,sizeof(element));
 
 	int p;
 	char d[101];
@@ -13,22 +19,32 @@ void binary_search_tree(int n){
 	for(int i = 0; i<n; ++i){
 
 		fscanf(fp, "%d %s", &p, d);
-		position = &genesis;
-		
-		do{
+		position = genesis.next;
+		while(position->priority){
 
 			if(p > position->priority) position = position->next;
 			else position = position->prev;
+		}
 
-		}while(position->next || position->prev);
-
-		position->priority = p;
+		position->priority = ++p;
 		strcat(position->data,d);
-		position->next = 0;
-		position->prev = 0;
-
+		position->next = (element*)calloc(1,sizeof(element));
+		position->prev = (element*)calloc(1,sizeof(element));
 	}
 
+	while(genesis.next){
+
+		parent = &genesis, position = &genesis;
+
+		while(position->next)	parent = position, position = position->next;
+		
+		if(position->priority)	fprintf(fpp,"%d %s\n",-- position->priority,position->data);
+		
+		if(position->prev) parent->next = position->prev;
+		else parent->next = 0;
+
+	}
+	
 	fclose(fp);
 	fclose(fpp);
 }
