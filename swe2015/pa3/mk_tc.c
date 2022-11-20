@@ -26,6 +26,7 @@ void mk_tc(int n){
 	for(int i =0; i < n; ++i){
 		priority = arr[i];
 		fprintf(fp,"%d ",priority);
+		fprintf(stdout,"%d ",priority);
 		for(int l = 0; l< 100; ++l) fprintf(fp,"%c",rand()%26 + 65);
 		fprintf(fp,"\n");
 	}

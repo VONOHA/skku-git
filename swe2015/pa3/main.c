@@ -45,5 +45,17 @@ int main(void){
 	
 	printf("max_heap: %0.4f(ms)\n", result);
 	
+	//CASE4: BINARY_SEARCH_TREE
+	start = clock();
+	
+	//binary_search_tree(n);
+	binary_search_tree(n);
+
+	end = clock();
+	
+	result = (double)(end - start);
+	
+	printf("max_heap: %0.4f(ms)\n", result);
+	
 	return 0;
 }

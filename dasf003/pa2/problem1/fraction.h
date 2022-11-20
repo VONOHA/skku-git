@@ -17,6 +17,7 @@ class Fraction{
 				cout<<"Incorrect input";
 				exit(0);
 			}
+			if(D==1) N += NU, NU = 0;
 			if(!NU) D = 0; 
 		};
 		Fraction(double input){

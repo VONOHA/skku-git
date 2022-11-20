@@ -2,6 +2,7 @@
 
 CC=g++
 F = -W -Wall
+-std = c++14
 
 all: fraction
 

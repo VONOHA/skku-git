@@ -1,7 +1,6 @@
 #include "fraction.h"
 #include <iostream>
 #include <string>
-#include <cmath>
 
 using namespace std;
 
@@ -128,16 +127,15 @@ double Fraction::toDouble(void){
 	double n = (double)N, d = (double) D, nu = (double)NU;
 	if(!nu) d =1;
 	double result = n + nu/d;
-	result *= 1000000;
-	result = round(result);
-	result /= 1000000;
 	return result;
 }
 
 Fraction Fraction::str2Fraction(string str){
+	string str_N;
 	int index0 = -1, index1 = -1, length = str.length();
 	for(char c: str) if(++index0, c == '/') break;
-	string str_N = str.substr(0,index0);
+	if(!index0) str_N="0";
+	else str_N = str.substr(0,index0);
 	str.erase(0,index0+1);
 	for(char c:str) if(++index1, c =='/') break;
 	string str_NU = str.substr(0,index1);

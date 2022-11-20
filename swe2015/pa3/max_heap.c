@@ -2,52 +2,43 @@
 
 void max_heap(int n){
 
-	element *arr = (element*)calloc(n+1,sizeof(element)),dummy;
-
+	element *arr = (element*)calloc(n+1,sizeof(element));
+	element dummy,tmp;
 	arr[0].priority = 0;
 
-	int front = 0, position = 0;
-
-	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("max_heap.txt","w");
+	FILE *fp = fopen("testcases.txt","r"), *fpp = fopen("max_heap.txt","w");
 	
-	for(int i = 0; i<n; ++i){
-		fscanf(fp,"%d %s",&(dummy.priority), dummy.data);
-		position = front+1;
-		while(1){
-			if(arr[position].priority){
-				
-				if(arr[position-1].priority >= dummy.priority ){
-					
-					arr[position].priority = dummy.priority;
-					strcat(arr[position].data, dummy.data);
-					front += 1;
-					break;
-				
-				}else{
-
-					arr[position].priority = arr[position/2].priority;
-					strcat(arr[position].data, arr[position/2].data);
-					position /= 2;
-
-				}
-			
-			}
-			else {
-
-				arr[position].priority = dummy.priority;
-				strcat(arr[position].data,dummy.data);
-				front = position;
-				break;
-
-			}
+	int front = 0, parent, child;
+	for(int i = ++front; i<n+1; i = ++front){
+		fscanf(fp,"%d %s", &(dummy.priority),dummy.data);
+		while( (i!=1) && (dummy.priority > arr[i/2].priority) ){
+			arr[i] = arr[i/2];
+			i /= 2;
 		}
+		arr[i] = dummy;
 	}
 	
-	fclose(fp);
-	
-	for(int i = 1; i < n+1; ++i)fprintf(fpp, "%d %s\n", arr[i].priority, arr[i].data);
-	
-	fclose(fpp);
+	while(front){
+		dummy = arr[1];
+		tmp = arr[front--];
+		parent = 1, child = 2;
+		while(child <= front){
+			
+			if( (child < front) && (arr[child].priority < arr[child+1].priority)  ) ++child;
+			
+			if( tmp.priority >= arr[child].priority ) break;
+			
+			arr[parent] = arr[child];
+			parent = child;
+			child *= 2;
+		
+		}
+		
+		arr[parent] = tmp;
+		
+		fprintf(fpp,"%d %s\n", dummy.priority,dummy.data);
+	}
 
-	free(arr);
+	fclose(fp);
+	fclose(fpp);
 }

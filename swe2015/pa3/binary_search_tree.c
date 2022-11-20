@@ -1,41 +1,34 @@
-#include "array.h"
+#include "priority_queue.h"
 
-typedef struct{
-	
-	int priority;
-	char data[101];
 
-}element;
+void binary_search_tree(int n){
+	
+	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("binary_serach_tree.txt","w");
+	
+	element genesis = {.priority = 0, .prev = 0, .next = 0}, *position = 0;
 
-void array(int n){
-	
-	element *arr = (element*)calloc(n,sizeof(element));
-	
-	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("result.txt","w");
-	
-	int min_i = -1, min_p = -1, length;
-	
+	int p;
+	char d[101];
+
 	for(int i = 0; i<n; ++i){
-		fscanf(fp,"%d %s",&(arr[i].priority), arr[i].data);
+
+		fscanf(fp, "%d %s", &p, d);
+		position = &genesis;
+		
+		do{
+
+			if(p > position->priority) position = position->next;
+			else position = position->prev;
+
+		}while(position->next || position->prev);
+
+		position->priority = p;
+		strcat(position->data,d);
+		position->next = 0;
+		position->prev = 0;
+
 	}
-	
+
 	fclose(fp);
-		
-	for(int i = 0; i<n; ++i){
-		
-		min_i = -1, min_p = -1;
-		
-		for(int l = 0;l <n; ++l){
-			if(min_p <  arr[l].priority) min_p = arr[l].priority, min_i = l;
-		}
-		
-		fprintf(fpp, "%d %s\n", arr[min_i].priority, arr[min_i].data);
-		
-		arr[min_i].priority = -1;
-		length = strlen(arr[min_i].data);
-
-		for(int j = 0; j<length; ++j) arr[min_i].data[j] = '\0';
-	
-	}
-
+	fclose(fpp);
 }
