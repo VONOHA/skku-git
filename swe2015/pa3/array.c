@@ -4,7 +4,7 @@ void array(int n){
 	
 	element *arr = (element*)calloc(n,sizeof(element));
 	
-	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("array.txt","w");
+	FILE* fp = fopen("./textfile/testcases.txt","r"), *fpp = fopen("./textfile/array.txt","w");
 	
 	int min_i = -1, min_p = -1, length;
 	

@@ -6,7 +6,7 @@ void max_heap(int n){
 	element dummy,tmp;
 	arr[0].priority = 0;
 
-	FILE *fp = fopen("testcases.txt","r"), *fpp = fopen("max_heap.txt","w");
+	FILE *fp = fopen("./textfile/testcases.txt","r"), *fpp = fopen("./textfile/max_heap.txt","w");
 	
 	int front = 0, parent, child;
 	for(int i = ++front; i<n+1; i = ++front){

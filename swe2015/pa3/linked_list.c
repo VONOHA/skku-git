@@ -12,7 +12,7 @@ void linked_list(int n){
 	
 	//fp is file of testcases
 	//ffp is file for result
-	FILE* fp = fopen("testcases.txt","r"), *fpp = fopen("linked_list.txt","w");
+	FILE* fp = fopen("./textfile/testcases.txt","r"), *fpp = fopen("./textfile/linked_list.txt","w");
 
 	for(int i = 0; i<n; ++i){
 		//pointer for current input

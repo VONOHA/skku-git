@@ -9,7 +9,7 @@ void mk_tc(int n){
 	// arr is array for priority;
 	// tmp&m for swapping
 	char address[100];
-	FILE* fp = fopen("testcases.txt","w");
+	FILE* fp = fopen("./textfile/testcases.txt","w");
 
 	arr = (int*)calloc(n,sizeof(int));
 	
