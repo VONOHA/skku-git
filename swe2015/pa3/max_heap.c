@@ -41,5 +41,4 @@ void max_heap(int n){
 
 	fclose(fp);
 	fclose(fpp);
-	printf("1");
 }
