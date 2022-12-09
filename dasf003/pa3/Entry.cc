@@ -6,5 +6,6 @@ Entry::~Entry() = default;
 std::ostream& operator<<(std::ostream& os, const Entry& entry)
 {
   //Implement your code here
-  //...
+	os<<entry.content();
+	return os;
 }

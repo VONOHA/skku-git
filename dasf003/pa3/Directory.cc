@@ -19,13 +19,15 @@ Directory::Directory(const string& name){
 }
 
 Directory::Directory(const Directory& o){
+	Directory dummy_directory("");
+	dummy_directory = o;
 	count_ = o.count(), name_ = o.name();
-	Entry *e;
+	Entry *e = 0;
 	string str = o.content(), dummy;
 	stringstream list_stream(str);
 	for(int i = 0; i<count_; ++i){
 		list_stream>>dummy;
-		e = o.find(dummy);
+		e = dummy_directory.find(dummy);
 		if(e)entries_[i] = e->clone();
 	}
 }
@@ -34,17 +36,29 @@ Directory::~Directory(){
 	for(int i = 0; i<maxcount_; ++i) delete entries_[i];
 }
 
+const string& Directory::name()const{
+	return name_;
+}
+
 void Directory::print(ostream& os, size_t indent) const{
+	if(indent)indent+=2;
+	for(int i = 0 ; i < indent; ++i) cout<<" ";
+	os<<"*"<<name_<<endl;
 	for(int i = 0; i< count_; ++i){
-		for(int l = 0; l<indent; ++l) os<< " ";
-		os<< entries_[i]->name();
-		os<<endl;
+		entries_[i]->print(os,indent+1);
 	}
 }
 
 Entry* Directory::remove(const string& name){
-
-	for(int i = 0; i < count_; ++i) if( (entries_[i]->name()) == name) delete entries_[i];
+	string str;
+	for(int i = 0; i < count_; ++i){ 
+		str = entries_[i]->name();
+		if(str== name) {
+			count_--;
+			break;
+		}
+	
+	}
 	return 0;
 }
 
@@ -74,7 +88,7 @@ string Directory::content()const{
 	string result = "", blank = " ", dummy;
 	for(int i = 0; i<count_; ++i){
 		dummy = entries_[i]->name();
-		result+=blank;
+		if(i)result+=blank;
 		result+=dummy;
 	}
 	return result;
