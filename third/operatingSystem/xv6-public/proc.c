@@ -89,7 +89,6 @@ found:
   p->state = EMBRYO;
   p->pid = nextpid++;
   p->nice = 20; // set nice value (project1)
-  cprintf("nice allocated %d\n", p->nice);
   release(&ptable.lock);
 
   // Allocate kernel stack.
