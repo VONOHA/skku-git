@@ -51,6 +51,8 @@ trap(struct trapframe *tf)
     if(cpuid() == 0){
       acquire(&tickslock);
       ticks++;
+//			(myproc()->alloctime) --; //project_2
+//			(myproc()->rruntime) ++;  //project_2
       wakeup(&ticks);
       release(&tickslock);
     }

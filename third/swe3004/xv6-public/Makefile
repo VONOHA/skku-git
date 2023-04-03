@@ -181,7 +181,9 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
-	_mytest\
+	_ps\
+	_setnice\
+	_getnice\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)
