@@ -683,7 +683,7 @@ ps(int pid){
 				"priority", "vruntime", "alloctime", "runtime");
 		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 			if(p->state != UNUSED)
-				cprintf("%s %d %s %d %d %d %d\n",p->name,p->pid, states[p->state],\
+				cprintf("%s %d %s %d %ld %d %d\n",p->name,p->pid, states[p->state],\
 						p->nice, p->vruntime, p->alloctime, p->runtime);
 		}
 		release(&ptable.lock);
@@ -693,7 +693,7 @@ ps(int pid){
 			if(pid == p->pid){
 				cprintf("%s %s %s %s %s %s %s\n","name","pid","state",\
 						"priority", "vruntime", "alloctime", "runtime");
-				cprintf("%s %d %s %d %d %d %d\n",p->name,p->pid, states[p->state],\
+				cprintf("%s %d %s %d %ld %d %d\n",p->name,p->pid, states[p->state],\
 						p->nice, p->vruntime, p->alloctime, p->runtime);
 				release(&ptable.lock);
 				return ;

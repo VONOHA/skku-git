@@ -61,7 +61,7 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 	int nice;			             // nice value (project_1) 
-	int vruntime;               // virtual runtime (project_2)
+	long long vruntime;               // virtual runtime (project_2)
 	int rruntime;               // real runtime (project_2)
 	int alloctime;              // allocated runtime (project_2)
 	int runtime;                //total runtime (project_2)
