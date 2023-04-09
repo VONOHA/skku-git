@@ -18,8 +18,6 @@ const int prio_to_weight[40] = {
 	/*  15 */ 36, 29, 23, 18, 15,
 }; // project_2
 
-const int prioSum = 445163;
-
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -32,8 +30,6 @@ extern void forkret(void);
 extern void trapret(void);
 
 static void wakeup1(void *chan);
-
-const int schedLatency = 6; // project_2
 
 void
 pinit(void)
@@ -101,12 +97,12 @@ allocproc(void)
   return 0;
 
 found:
-	p->state = EMBRYO;
+  p->state = EMBRYO;
   p->pid = nextpid++;
-  p->nice = 20; // set nice value (project1)
-	p->rruntime = 0; //project_2
-	p->runtime = 0; // project_2
-	release(&ptable.lock);
+	p->alloctime = 0; //project_2;
+	p->runtime = 0; // project_2;
+	p->nice = 20; // project_1;
+  release(&ptable.lock);
 
   // Allocate kernel stack.
   if((p->kstack = kalloc()) == 0){
@@ -141,7 +137,7 @@ userinit(void)
   extern char _binary_initcode_start[], _binary_initcode_size[];
 
   p = allocproc();
-	p->vruntime = 0; // project_2  
+  
   initproc = p;
   if((p->pgdir = setupkvm()) == 0)
     panic("userinit: out of memory?");
@@ -155,6 +151,7 @@ userinit(void)
   p->tf->eflags = FL_IF;
   p->tf->esp = PGSIZE;
   p->tf->eip = 0;  // beginning of initcode.S
+	p->vruntime = 0;
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
@@ -214,6 +211,7 @@ fork(void)
     return -1;
   }
   np->sz = curproc->sz;
+	np->vruntime = curproc->vruntime; //project_2;
   np->parent = curproc;
   *np->tf = *curproc->tf;
 
@@ -232,8 +230,6 @@ fork(void)
   acquire(&ptable.lock);
 
   np->state = RUNNABLE;
-	np->vruntime = curproc->vruntime; // project_2
-	np->alloctime = 0; // project_2
 
   release(&ptable.lock);
 
@@ -341,56 +337,18 @@ wait(void)
 void
 scheduler(void)
 {
-	int time;
-  struct proc *p;
+	int prio_sum;
+  struct proc *p, *pp;
   struct cpu *c = mycpu();
   c->proc = 0;
   
- //  for(;;){
- //    // Enable interrupts on this processor.
- //    sti();
- //
- //    // Loop over process table looking for process to run.
- //    acquire(&ptable.lock);
- //    
- //		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
- //      if(p->state != RUNNABLE)
- //				continue;
- //
- //			//initialize rruntime
- //			p->rruntime = 0;
- //			//alloctime update
- //			time = schedLatency*1000; // project_2
- //			time *= prio_to_weight[p->nice]; // project_2
- //			time /= prio_to_weight[p->nice]; //project_2
- //			p->alloctime = time; //project_2
- //			c->proc = p;
- //			switchuvm(p);
- //			p->state = RUNNING;
- //
- //			swtch(&(c->scheduler), p->context);
- //
- //			switchkvm();
- //
- //			// Process is done running for now.
- //			// It should have changed its p->state before coming back.
- //			c->proc = 0;
- //
- //		}
- //
- //				
- //		release(&ptable.lock);
- //
-//  }
-   for(;;){
+  for(;;){
     // Enable interrupts on this processor.
     sti();
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
-
-		//get first runnable process
-
+		
 		for(p = ptable.proc; p<&ptable.proc[NPROC]; p++)
 		{
 			if(p->state == RUNNABLE)
@@ -406,27 +364,34 @@ scheduler(void)
 		if(p->state != RUNNABLE)
 			goto rematch;
 
-  	p->rruntime = 0;
-  	//alloctime update
-  	time = schedLatency*1000; // project_2
-  	time *= prio_to_weight[p->nice]; // project_2
-  	time /= prio_to_weight[p->nice]; //project_2
-  	p->alloctime = time; //project_2
-  	c->proc = p;
-  	switchuvm(p);
-  	p->state = RUNNING;
-  
-  	swtch(&(c->scheduler), p->context);
-  
-  	switchkvm();
-  
-  	// Process is done running for now.
-  	// It should have changed its p->state before coming back.
-  	c->proc = 0;
-		
+    // Switch to chosen process.  It is the process's job
+    // to release ptable.lock and then reacquire it
+    // before jumping back to us.
+    c->proc = p;
+    switchuvm(p);
+		p->alloctime = (long) sched_latency * (long) prio_to_weight[p->nice];
+			
+		prio_sum = 0;
+
+		for(pp = ptable.proc; pp < &ptable.proc[NPROC]; pp++)
+		{
+			if(p->state == RUNNABLE)
+				prio_sum += prio_to_weight[pp->nice];
+		}
+      
+		p->alloctime /= prio_sum;
+		p->state = RUNNING;
+
+    swtch(&(c->scheduler), p->context);
+    switchkvm();
+
+    // Process is done running for now.
+    // It should have changed its p->state before coming back.
+    c->proc = 0;
+
 		rematch:
 			release(&ptable.lock);
-	 }
+  }
 }
 
 // Enter scheduler.  Must hold only ptable.lock
@@ -439,35 +404,23 @@ scheduler(void)
 void
 sched(void)
 {
-  int time, intena;
+  int intena;
   struct proc *p = myproc();
 
   if(!holding(&ptable.lock))
     panic("sched ptable.lock");
   if(mycpu()->ncli != 1)
     panic("sched locks");
+  if(p->state == RUNNING)
+    panic("sched running");
   if(readeflags()&FL_IF)
     panic("sched interruptible");
   intena = mycpu()->intena;
-	(p->rruntime)+=1000; // project_2
-	(p->runtime) += 1000;
-  if(p->state == RUNNING && ((p->alloctime) -= 1000) > 0)  // project_2
-		mycpu()->intena = intena; // project_2
-	else
-	{ 
-		if(p->state == RUNNING)
-			myproc()->state = RUNNABLE;
-	
-
-		// vruntime update
-		time = p->rruntime;
-		time *= 1024; // project_2
-		time /= prio_to_weight[p->nice]; // project_2
-		p->vruntime += time; // project_2
-
-		swtch(&p->context, mycpu()->scheduler);
-	} // project_2
-  mycpu()->intena = intena;
+	//swtch(&p->context, mycpu()->scheduler);
+	//project_2;
+	swtch(&p->context, mycpu()->scheduler);
+  
+	mycpu()->intena = intena;
 }
 
 // Give up the CPU for one scheduling round.
@@ -475,7 +428,8 @@ void
 yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
-	sched(); // project_2
+  myproc()->state = RUNNABLE;
+  sched();
   release(&ptable.lock);
 }
 
@@ -545,16 +499,28 @@ sleep(void *chan, struct spinlock *lk)
 static void
 wakeup1(void *chan)
 {
-	int time;
-  struct proc *p;
+  struct proc *p, *pp, *ppp;
 
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     if(p->state == SLEEPING && p->chan == chan)
-      p->state = RUNNABLE;
-			time = 1000;//project_2
-			time *= 1024;
-			time /= prio_to_weight[p->nice];
-			p->vruntime = time;//project_2
+		{
+			//project_2;
+			for(pp = ptable.proc; pp< &ptable.proc[NPROC]; pp++)
+				if(pp->state == RUNNABLE)
+					break;
+
+			for(ppp = pp; ppp< &ptable.proc[NPROC]; ppp++)
+				if(ppp->state == RUNNABLE && ppp->vruntime < pp->vruntime)
+					pp = ppp;
+
+			if(pp->state != RUNNABLE)
+				p->vruntime = 0;
+			else
+				p->vruntime = pp->vruntime \
+											- ((long) 1024000 / (long)prio_to_weight[p->nice]);
+
+			p->state = RUNNABLE;
+		}
 }
 
 // Wake up all processes sleeping on chan.
@@ -644,6 +610,7 @@ getnice(int pid){
   return -1;
 }
 
+//project_1
 int
 setnice(int pid, int value){
 
@@ -664,6 +631,35 @@ setnice(int pid, int value){
   return -1;
 }
 
+long
+digitCnt(long num)
+{
+	long i, l;
+	for(i = 1, l = 10; num /= l; i++)
+		;
+	return i;
+}
+
+void
+allignedPrint(int width, char *str, int num)
+{
+	int len;
+	
+	if(!str)
+	{
+		len = digitCnt(num);
+		cprintf("%l",num);
+		for(int i = 0; i< width - len; i++)
+			cprintf(" ");
+	}else {
+		len = strlen(str);
+		cprintf("%s", str);
+		for(int i = 0; i < width - len; i++)
+			cprintf(" ");
+	}
+}
+
+
 void
 ps(int pid){
 
@@ -679,22 +675,53 @@ ps(int pid){
 
 	acquire(&ptable.lock);
 	if(!pid){
-		cprintf("%s %s %s %s %s %s %s\n","name","pid","state",\
-				"priority", "vruntime", "alloctime", "runtime");
+		allignedPrint(15, "name", 0);
+		allignedPrint(15, "pid", 0);
+		allignedPrint(15, "state",0);
+		allignedPrint(15, "priority", 0);
+		allignedPrint(15, "runtime/weight", 0);
+		allignedPrint(15, "vruntime", 0);
+		allignedPrint(15, "runtime", 0);
+		allignedPrint(15, "tick", 0);
+		allignedPrint(15, 0, ticks*1000);
+		cprintf("\n");
 		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 			if(p->state != UNUSED)
-				cprintf("%s %d %s %d %ld %d %d\n",p->name,p->pid, states[p->state],\
-						p->nice, p->vruntime, p->alloctime, p->runtime);
+			{
+				allignedPrint(15, p->name, 0);
+				allignedPrint(15, 0, p->pid);
+				allignedPrint(15, states[p->state],0);
+				allignedPrint(15, 0, p->nice);
+				allignedPrint(15,0,(p->runtime)/prio_to_weight[p->nice]);
+				allignedPrint(15,0, p->vruntime);
+				allignedPrint(15,0, p->runtime);
+				cprintf("\n");
+			}
 		}
 		release(&ptable.lock);
 		return ;
 	}else{
 		for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
 			if(pid == p->pid){
-				cprintf("%s %s %s %s %s %s %s\n","name","pid","state",\
-						"priority", "vruntime", "alloctime", "runtime");
-				cprintf("%s %d %s %d %ld %d %d\n",p->name,p->pid, states[p->state],\
-						p->nice, p->vruntime, p->alloctime, p->runtime);
+				allignedPrint(15, "name", 0);
+				allignedPrint(15, "pid", 0);
+				allignedPrint(15, "state",0);
+				allignedPrint(15, "priority", 0);
+				allignedPrint(15, "runtime/weight", 0);
+				allignedPrint(15, "vruntime", 0);
+				allignedPrint(15, "runtime", 0);
+				allignedPrint(15, "tick", 0);
+				allignedPrint(15, 0, ticks*1000);
+				cprintf("\n");
+				allignedPrint(15, p->name, 0);
+				allignedPrint(15, 0, p->pid);
+				allignedPrint(15, states[p->state],0);
+				allignedPrint(15, 0, p->nice);
+				allignedPrint(15,0,(p->runtime)/prio_to_weight[p->nice]);
+				allignedPrint(15,0, p->vruntime);
+				allignedPrint(15,0, p->runtime);
+				cprintf("\n");
+
 				release(&ptable.lock);
 				return ;
 			}
@@ -703,4 +730,4 @@ ps(int pid){
 		return ;
 	}
 }
-//end_project1
+

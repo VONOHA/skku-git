@@ -1,3 +1,13 @@
+#ifndef prio_20
+#define prio_20 1024
+#endif
+
+#ifndef sched_latency
+#define sched_latency 10000
+#endif
+
+extern const int prio_to_weight[40]; // project_2
+
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
@@ -10,17 +20,6 @@ struct cpu {
   struct proc *proc;           // The process running on this cpu or null
 };
 
- //const int prio_to_weight[40] = {
- //	/* -20 */ 88761, 71755, 56483, 46273, 36291,
- //	/* -15 */ 29154, 23254, 18705, 14949, 11916,
- //	/* -10 */ 9548, 7620, 6100, 4904, 3906,
- //	/*  -5 */ 3121, 2501, 1991, 1586, 1277,
- //	/*   0 */ 1024, 820, 655, 526, 423,
- //	/*   5 */ 335, 272, 215, 172, 137,
- //	/*  10 */ 110, 87, 70, 56, 45,
- //	/*  15 */ 36, 29, 23, 18, 15,
- //};
- //
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 
@@ -60,11 +59,10 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-	int nice;			             // nice value (project_1) 
-	long long vruntime;               // virtual runtime (project_2)
-	int rruntime;               // real runtime (project_2)
-	int alloctime;              // allocated runtime (project_2)
-	int runtime;                //total runtime (project_2)
+	long alloctime;              // project_2;
+	long runtime;								 // project_2;
+	long vruntime;							 // project_2;
+	int nice;                    // project_2;
 };
 
 // Process memory is laid out contiguously, low addresses first:

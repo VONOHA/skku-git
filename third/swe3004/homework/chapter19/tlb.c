@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+#include <sched.h>
 #include <bits/types/struct_timeval.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -7,6 +9,11 @@
 
 int main(int argc, char **argv)
 {
+
+	cpu_set_t mask;
+	CPU_ZERO(&mask);
+	CPU_SET(0, &mask);
+	int result = sched_setaffinity(0,sizeof(mask), &mask);
 	if(argc<4)
 	{
 		// 1 for pages;
@@ -28,7 +35,7 @@ int main(int argc, char **argv)
 
 	fp = fopen(argv[3], "a");
 
-	arr = (int *)malloc((size_t)pages * (size_t)pagesize);
+	arr = (int *)calloc((size_t)pages , (size_t)pagesize);
 	
 	struct timeval startTime, endTime;
 
@@ -40,7 +47,7 @@ int main(int argc, char **argv)
 		gettimeofday(&startTime, NULL);
 		for(int i = 0; i < pages; i += jump)
 		{
-			arr[i] = i;
+			arr[i] += i;
 		}
 		gettimeofday(&endTime, NULL);
 		

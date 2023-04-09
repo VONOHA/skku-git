@@ -25,12 +25,12 @@ static struct {
 } cons;
 
 static void
-printint(int xx, int base, int sign)
+printint(long xx, int base, int sign)
 {
   static char digits[] = "0123456789abcdef";
   char buf[16];
   int i;
-  uint x;
+  unsigned long x;
 
   if(sign && (sign = xx < 0))
     x = -xx;
@@ -55,7 +55,7 @@ void
 cprintf(char *fmt, ...)
 {
   int i, c, locking;
-  uint *argp;
+  unsigned long *argp;
   char *s;
 
   locking = cons.locking;
@@ -65,7 +65,7 @@ cprintf(char *fmt, ...)
   if (fmt == 0)
     panic("null fmt");
 
-  argp = (uint*)(void*)(&fmt + 1);
+  argp = (unsigned long *)(void*)(&fmt + 1);
   for(i = 0; (c = fmt[i] & 0xff) != 0; i++){
     if(c != '%'){
       consputc(c);
@@ -78,6 +78,9 @@ cprintf(char *fmt, ...)
     case 'd':
       printint(*argp++, 10, 1);
       break;
+		case 'l':
+			printint(*argp++, 10, 1);
+			break;
     case 'x':
     case 'p':
       printint(*argp++, 16, 0);

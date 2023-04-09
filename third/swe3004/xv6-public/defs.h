@@ -120,9 +120,9 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
-int             getnice(int); // project1
-int             setnice(int,int);//project1
-void            ps(int);//project1
+void						ps(int);
+int             setnice(int, int);
+int             getnice(int);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

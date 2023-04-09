@@ -90,13 +90,21 @@ sys_uptime(void)
   return xticks;
 }
 
-//start_project1
+int
+sys_ps(void)
+{
+	int pid;
+	if(argint(0, &pid) < 0)
+		return -1;
+  ps(pid);
+	return 0;
+}
+
 int
 sys_getnice(void)
 {
 	int pid;
-
-	if(argint(0, &pid)<0)
+	if(argint(0, &pid) < 0)
 		return -1;
 	return getnice(pid);
 }
@@ -104,21 +112,8 @@ sys_getnice(void)
 int
 sys_setnice(void)
 {
-	int pid, newNice;
-
-	if(argint(0,&pid)<0 || argint(1,&newNice)<0)
+	int pid, value;
+	if(argint(0, &pid)<0 || argint(1, &value))
 		return -1;
-	return setnice(pid,newNice);
+	return setnice(pid, value);
 }
-
-int
-sys_ps(void)
-{
-	int pid;
-
-	if(argint(0,&pid)<0)
-		return -1;
-	ps(pid);
-	return 0;
-}
-//end_project1
