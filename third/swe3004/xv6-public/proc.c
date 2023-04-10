@@ -375,7 +375,7 @@ scheduler(void)
 
 		for(pp = ptable.proc; pp < &ptable.proc[NPROC]; pp++)
 		{
-			if(p->state == RUNNABLE)
+			if(pp->state == RUNNABLE)
 				prio_sum += prio_to_weight[pp->nice];
 		}
       
@@ -631,6 +631,7 @@ setnice(int pid, int value){
   return -1;
 }
 
+//project_2
 long
 digitCnt(long num)
 {
@@ -640,6 +641,7 @@ digitCnt(long num)
 	return i;
 }
 
+//project_2
 void
 allignedPrint(int width, char *str, int num)
 {
@@ -730,4 +732,4 @@ ps(int pid){
 		return ;
 	}
 }
-
+//project_2
