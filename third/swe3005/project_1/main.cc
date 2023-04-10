@@ -67,6 +67,7 @@ int main(int argc, char **argv){
 			delete inst;
 		}
 	}
+	printf("\n");
 
 	return 0;
 }
